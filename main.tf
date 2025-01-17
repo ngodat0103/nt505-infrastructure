@@ -12,3 +12,12 @@ module "security" {
   source = "./modules/openstack/network/security"
   security_group_name = "Lab-Security-Group"
 }
+
+module "instances" {
+  source = "./modules/openstack/instances"
+  instance_name = "karina"
+  security_groups_name = [module.security.security_group_name]
+  network_id = module.network-topo.network_id
+  fixed_ip_v4 = "192.168.50.10"
+  key_pair_name = "my public key"
+}
