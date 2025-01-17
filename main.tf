@@ -1,19 +1,14 @@
-# Define required providers
-terraform {
-  required_version = ">= 0.14.0"
-  required_providers {
-    openstack = {
-      source  = "terraform-provider-openstack/openstack"
-      version = "~> 1.53.0"
-    }
-  }
+module "network-topo" {
+  source = "./modules/openstack/network/network-topo"
 }
 
-# Configure the OpenStack Provider
-# docs https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs
-provider "openstack" {
-  cloud = "openstack"
+module "network-router" {
+  source = "./modules/openstack/network/network-router"
+  network_public_id = "c3455e8f-ea16-4f5d-ad5e-5c4292015a0d"
+  network_subnet_id = module.network-topo.network_subnet_id
 }
-module "instances" {
-        source = "./modules/openstack/instances"
+
+module "security" {
+  source = "./modules/openstack/network/security"
+  security_group_name = "Lab-Security-Group"
 }
