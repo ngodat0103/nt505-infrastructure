@@ -7,11 +7,15 @@ terraform {
     }
   }
 }
+resource "openstack_compute_keypair_v2" "default_keypair" {
+  name       = "${var.instance_name}-keypair"
+  public_key = var.public_key
+}
 resource "openstack_compute_instance_v2" "karina_instance" {
   name            = var.instance_name
   image_id        = var.image_id
   flavor_name       = var.flavor_name
-  key_pair        = var.key_pair_name
+  key_pair        = openstack_compute_keypair_v2.default_keypair.name
   security_groups = var.security_groups_name
   tags = ["gitlab-agent","hosted-some-app"]
   network {
@@ -35,3 +39,4 @@ resource "openstack_networking_floatingip_associate_v2" "associate_floating_ip" 
   port_id = data.openstack_networking_port_v2.port_1.id
   depends_on = [openstack_compute_instance_v2.karina_instance]
 }
+

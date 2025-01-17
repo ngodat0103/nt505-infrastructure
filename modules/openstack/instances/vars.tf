@@ -26,7 +26,7 @@ variable "network_id" {
         description = "The network ID for the instance"
         type        = string
 }
-variable "key_pair_name" {
-        description = "The key pair for the instance"
+variable "public_key" {
+        description = "The public key for the instance"
         type        = string
 }
