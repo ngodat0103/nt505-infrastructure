@@ -1,0 +1,51 @@
+- name: Configure Vpn client
+  hosts: all
+  become: yes
+  vars:
+    custom_table_id: 128
+  tasks:
+    - name: Copy Vpn configuration file
+      ansible.builtin.copy:
+        src: akira.ovpn
+        dest: /etc/openvpn/client/akira-home.conf
+        mode: 0600
+    - name: Gather source IP
+      shell: ip route get 1 | grep -Po '(?<=src )(\S+)'
+      register: source_ip
+      changed_when: false
+    - name: Gather default interface
+      shell: ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)'
+      register: default_dev
+      changed_when: false
+    - name: Gather default gateway
+      shell: ip -4 route ls | grep default | grep -Po '(?<=via )(\S+)'
+      register: default_gw
+      changed_when: false
+
+    - name: Add IP rule for the custom table
+      command: >
+        ip rule add from {{ source_ip.stdout }} table {{ custom_table_id }}
+      # Optionally ignore errors if the rule already exists
+      ignore_errors: true
+
+    - name: Add route for the source IP to the custom table
+      command: >
+        ip route add table {{ custom_table_id }}
+        to {{ source_ip.stdout }}/32
+        dev {{ default_dev.stdout }}
+      # Optionally ignore errors if the route already exists
+      ignore_errors: true
+
+    - name: Add default route via the custom table
+      command: >
+        ip route add table {{ custom_table_id }}
+        default via {{ default_gw.stdout }}
+      # Optionally ignore errors if the route already exists
+      ignore_errors: true
+    - name: Start Openvpn client in service mode
+      ansible.builtin.systemd_service:
+        name: openvpn-client@akira-home
+        state: started
+        enabled: yes
+        daemon_reload: yes
+        
