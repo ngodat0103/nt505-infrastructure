@@ -1,0 +1,17 @@
+- name: Setup Dependencies
+  hosts: all
+  become: yes
+  roles:
+    - geerlingguy.docker
+  tasks:
+   - name: Install OpenVpn
+     ansible.builtin.apt:
+      name: "openvpn"
+      state: present
+      update_cache: true
+      update_cache_retries: 3
+   - name: Allow user Ubuntu to run docker
+     ansible.builtin.user:
+      name: ubuntu
+      groups: docker
+      append: yes
