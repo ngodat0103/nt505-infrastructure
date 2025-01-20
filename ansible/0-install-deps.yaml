@@ -3,15 +3,16 @@
   become: yes
   roles:
     - geerlingguy.docker
+    - gitlab-runner
   tasks:
+   - name: Update apt cache
+     shell: |
+      apt update
+      apt upgrade -y
    - name: Install OpenVpn
      ansible.builtin.apt:
       name: "openvpn"
       state: present
       update_cache: true
       update_cache_retries: 3
-   - name: Allow user Ubuntu to run docker
-     ansible.builtin.user:
-      name: ubuntu
-      groups: docker
-      append: yes
+  

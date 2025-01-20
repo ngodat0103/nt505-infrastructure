@@ -1,0 +1,12 @@
+- name: Configure users
+  hosts: karina-clouduit
+  become: yes
+  vars:
+  tasks:
+   - name: Allow user Ubuntu to run docker
+     ansible.builtin.user:
+      name: ubuntu
+      password: "{{ 'ubuntu' | password_hash('sha512') }}"
+      groups: docker
+      append: yes
+

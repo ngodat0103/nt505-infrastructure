@@ -1,5 +1,5 @@
 - name: Configure Vpn client
-  hosts: all
+  hosts: karina-clouduit
   become: yes
   vars:
     custom_table_id: 128
@@ -45,7 +45,7 @@
     - name: Start Openvpn client in service mode
       ansible.builtin.systemd_service:
         name: openvpn-client@akira-home
-        state: started
-        enabled: yes
+        state: stopped
+        enabled: false
         daemon_reload: yes
         
