@@ -2,8 +2,21 @@
   hosts: all
   become: yes
   roles:
-    - geerlingguy.docker
-    - gitlab-runner
+    - role: java
+      tags: java
+      when:
+        - ansible_os_family == 'Debian'
+      vars:
+        java_packages:
+          - openjdk-21-jdk
+    - role: maven
+      vars:
+        maven_version: '3.9.4'
+      tags: maven
+    - role: gitlab-runner
+      tags: gitlab-runner
+    - role: geerlingguy.docker
+      tags: docker
   tasks:
    - name: Update apt cache
      shell: |

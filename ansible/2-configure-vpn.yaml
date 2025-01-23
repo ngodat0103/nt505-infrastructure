@@ -45,7 +45,8 @@
     - name: Start Openvpn client in service mode
       ansible.builtin.systemd_service:
         name: openvpn-client@akira-home
-        state: stopped
+        state: started
         enabled: false
-        daemon_reload: yes
+      tags: 
+        - openvpn
         

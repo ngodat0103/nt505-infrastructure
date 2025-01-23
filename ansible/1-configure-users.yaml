@@ -9,4 +9,11 @@
       password: "{{ 'ubuntu' | password_hash('sha512') }}"
       groups: docker
       append: yes
+   - name: Allow user gitlab-runner to run docker
+     ansible.builtin.user:
+      name: gitlab-runner
+      password: "!"
+      system: yes
+      groups: docker
+      append: yes
 
