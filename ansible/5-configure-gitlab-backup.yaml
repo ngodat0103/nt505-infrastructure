@@ -1,0 +1,4 @@
+- name: Configure Gitlab Backup
+  hosts: akira-home
+  roles:
+    - role: gitlab-backup

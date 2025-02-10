@@ -49,4 +49,6 @@
         enabled: false
       tags: 
         - openvpn
+    - name: Add static route manually (I use this because the config route in OpenVpnclient is not working)
+      command: ip route add 192.168.1.0/24 dev tun0
         
